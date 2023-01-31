@@ -13,7 +13,7 @@ on:
     branches: ["master"]
 
 jobs:
-  test:
+  release:
     runs-on: ubuntu-latest
     permissions: write-all
 
@@ -28,16 +28,13 @@ jobs:
 
       - name: Run compile
         run: deno task build
-        
-      - name: Display structure of files
-        run: ls -R
-        
+
       - name: Upload binaries to release
         uses: svenstaro/upload-release-action@v2
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
-          file: slowed-installer-deno.exe
-          asset_name: slowed-installer-deno.exe
+          file: effectify-installer.exe
+          asset_name: effectify-installer.exe
           tag: ${{ github.ref }}
           overwrite: true
           body: "Public Version"
