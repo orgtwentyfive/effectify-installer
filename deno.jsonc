@@ -1,0 +1,6 @@
+{
+  "tasks": {
+    "dev": "deno run --allow-run --allow-all --allow-write --watch main.ts",
+    "build":"deno compile --allow-all --target x86_64-pc-windows-msvc main.ts"
+  }
+}
