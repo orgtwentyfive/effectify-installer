@@ -1,6 +1,6 @@
 
 import { extensionContents, extensionPath } from "./modules/constants.ts";
-import { executePowerShell, existsDataDir, log, utf8 } from "./modules/utils.ts";
+import { closeSpotify, executePowerShell, existsDataDir, log, utf8 } from "./modules/utils.ts";
 
 
 
@@ -16,7 +16,6 @@ async function main() {
 
   const hasSpicetifyInstalled = existsDataDir("spicetify");
   const hasSpotifyInstalled = existsDataDir("Spotify");
-
   if (!hasSpotifyInstalled) {
     log("Effectify doesn't work with Spotify installed from Windows Store.")
     const shouldProceed = confirm("Do you wish to quickly re-install it using Legacy Installer ?  (You will have to login again) ");
@@ -40,7 +39,8 @@ async function main() {
         break;
       } catch (error) { }
     }
-    log('Finished Installing')
+    log('Please wait...')
+    await closeSpotify()
   }
 
   if (hasSpicetifyInstalled) {
@@ -57,16 +57,16 @@ async function main() {
   }
 
   await executePowerShell("iwr -useb https://raw.githubusercontent.com/spicetify/spicetify-cli/master/install.ps1 | iex")
-  await executePowerShell("spicetify backup apply")
   await installExtension();
 
   log('Effectify has been installed successfully, close this window.')
 }
 
 async function installExtension() {
+  await executePowerShell("./spicetify backup apply", true)
   await Deno.writeFileSync(extensionPath, utf8(extensionContents))
-  await executePowerShell("spicetify config extensions effectify.js")
-  await executePowerShell("spicetify apply enable-devtools")
+  await executePowerShell("./spicetify config extensions effectify.js", true)
+  await executePowerShell("./spicetify apply enable-devtools", true)
 }
 
 
